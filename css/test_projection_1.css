@@ -1,0 +1,45 @@
+/* 
+    Document   : test_parallax_1
+    Created on : 29 oct. 2012, 14:22:13
+    Author     : Kevin AUVINET
+    Description:
+        Purpose of the stylesheet follows.
+*/
+
+body {
+    background: #130520;
+    color: #fff;
+    font-family: open-sans, sans-serif, serif;
+    font-size: 87.5%;
+}
+
+div#container {
+    margin: auto;
+    width: 80%;
+    height: 80%;
+    
+    position: relative;
+    min-height: 80%;
+}
+
+div#wrapper {
+    width: 100%;
+    height: 100%;
+    overflow: hidden;
+    position: relative;
+    background-color: #3c3c3c;
+}
+
+div#wrapper section {
+    position: absolute;
+    width: 100%;
+}
+
+section > * {
+    position: relative;
+    border: 1px solid #fff;
+    opacity: 0.8;
+    float: left;
+    margin-left: 15px;
+    cursor: pointer;
+}

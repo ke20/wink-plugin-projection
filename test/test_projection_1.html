@@ -1,0 +1,123 @@
+<!--
+To change this template, choose Tools | Templates
+and open the template in the editor.
+-->
+<!DOCTYPE html>
+<html>
+    <head>
+        <meta http-equiv="content-type" content="text/html; charset=UTF-8">
+        <meta name="apple-mobile-web-app-capable" content="yes">
+        <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no" />
+        
+        <!-- THEME UTILITY -->
+        <link rel="stylesheet" href="../../../_themes/utils/loader.css" type="text/css">
+        <!-- END THEME UTILITY -->
+		
+        <!-- CORE -->
+        <!-- Can be replaced by wink.min.js -->
+        <script type="text/javascript" src="../../../_amd/js/amd.js"></script>
+        <script type="text/javascript" src="../../../_base/_base/js/base.js"></script>
+        <script type="text/javascript" src="../../../_base/error/js/error.js"></script>
+        <script type="text/javascript" src="../../../_base/json/js/json.js"></script>
+        <script type="text/javascript" src="../../../_base/ua/js/ua.js"></script>
+        <script type="text/javascript" src="../../../_base/topics/js/topics.js"></script>
+        <script type="text/javascript" src="../../../_base/_feat/js/feat.js"></script>
+        <script type="text/javascript" src="../../../_base/_feat/js/feat_json.js"></script>
+        <script type="text/javascript" src="../../../_base/_feat/js/feat_css.js"></script>
+        <script type="text/javascript" src="../../../_base/_feat/js/feat_event.js"></script>
+        <script type="text/javascript" src="../../../_base/_feat/js/feat_dom.js"></script>
+        <script type="text/javascript" src="../../../fx/_xy/js/2dfx.js"></script>
+        <script type="text/javascript" src="../../../math/_basics/js/basics.js"></script>
+        <script type="text/javascript" src="../../../net/xhr/js/xhr.js"></script>
+        <script type="text/javascript" src="../../../ui/xy/layer/js/layer.js"></script>
+        <script type="text/javascript" src="../../../ux/event/js/event.js"></script>
+        <script type="text/javascript" src="../../../ux/touch/js/touch.js"></script>
+        <!-- END CORE -->
+        
+		<script type="text/javascript" src="../../../ux/gesture/js/gesture.js"></script>
+        <script type="text/javascript" src="../../../plugins/projection/js/projection.js"></script>
+        
+        <!-- STYLES -->
+        <link rel="stylesheet" href="../css/test_projection_1.css" type="text/css">
+        <!-- END STYLES -->
+        
+        <!-- FONTS -->
+        <link href='http://fonts.googleapis.com/css?family=Ubuntu|Lobster|Open+Sans:400,600' rel='stylesheet' type='text/css'>
+        <!-- END FONTS -->
+        
+        <script type="text/javascript">
+            
+            var init = function() {
+                new wink.plugins.Projection({
+                    target: 'wrapper',
+                    layers_class_prefix: 'depth',
+                    layers: [
+                        {
+                            element: wink.byId('section2'),
+                            depth: 300,
+                            children: [
+                                { element: wink.byId('section2').children[0], depth: 315 },
+                                { element: wink.byId('section2').children[1], depth: 355 }
+                            ]
+                        }
+                    ]
+                });
+            };
+            
+        </script>
+    </head>
+    <body onload="init();">
+        <div id="header" class="w_box w_header w_bg_dark">
+            <span id="title">Projection</span>
+            <input type="button" value="home" class="w_button w_radius w_bg_light w_right" onclick="window.location='../../../../index.html?theme='+theme"/>
+        </div>
+        
+        <div id="container">
+            <div id="wrapper">
+                <section id="section1" class="depth100">
+                    <h1>Titre 1</h2>
+                    <img class="depth170" src="http://fakeimg.pl/150/00abee/fff?text=twitter" />
+                    <img class="depth150" src="http://fakeimg.pl/150/00abee/fff?text=twitter" />
+                    <img src="http://fakeimg.pl/150/00abee/fff?text=twitter" />
+                    <img class="depth250" src="http://fakeimg.pl/150/00abee/fff?text=twitter" />
+                    <img class="depth110" src="http://fakeimg.pl/150/00abee/fff?text=twitter" />
+                </section>
+                
+                <section id="section2">
+                    <img src="http://fakeimg.pl/150/00abee/fff?text=twitter" />
+                    <img src="http://fakeimg.pl/150/00abee/fff?text=twitter" />
+                </section>
+                
+                <section id="section3" class="depth600">
+                    <img class="depth605" src="http://fakeimg.pl/150/00abee/fff?text=twitter" />
+                    <img class="depth627" src="http://fakeimg.pl/150/00abee/fff?text=twitter" />
+                    <img src="http://fakeimg.pl/150/00abee/fff?text=twitter" />
+                    <img class="depth650" src="http://fakeimg.pl/150/00abee/fff?text=twitter" />
+                    <img class="depth690" src="http://fakeimg.pl/150/00abee/fff?text=twitter" />
+                    <img class="depth690" src="http://fakeimg.pl/150/00abee/fff?text=twitter" />
+                    <img class="depth690" src="http://fakeimg.pl/150/00abee/fff?text=twitter" />
+                    <img class="depth690" src="http://fakeimg.pl/150/00abee/fff?text=twitter" />
+                    <img class="depth630" src="http://fakeimg.pl/150/00abee/fff?text=twitter" />
+                    <img class="depth660" src="http://fakeimg.pl/150/00abee/fff?text=twitter" />
+                    <img class="depth610" src="http://fakeimg.pl/150/00abee/fff?text=twitter" />
+                    <img class="depth684" src="http://fakeimg.pl/150/00abee/fff?text=twitter" />
+                    <img class="depth634" src="http://fakeimg.pl/150/00abee/fff?text=twitter" />
+                    <img class="depth630" src="http://fakeimg.pl/150/00abee/fff?text=twitter" />
+                    <img class="depth650" src="http://fakeimg.pl/150/00abee/fff?text=twitter" />
+                </section>
+                <section id="section4" class="depth700">
+                    <img class="depth750" src="http://fakeimg.pl/150/00abee/fff?text=twitter" />
+                    <img class="depth720" src="http://fakeimg.pl/150/00abee/fff?text=twitter" />
+                    <img class="depth730" src="http://fakeimg.pl/150/00abee/fff?text=twitter" />
+                    <img class="depth790" src="http://fakeimg.pl/150/00abee/fff?text=twitter" />
+                </section>
+                <section id="section5" class="depth1700">
+                    <img class="depth1750" src="http://fakeimg.pl/150/00abee/fff?text=twitter" />
+                    <img class="depth1720" src="http://fakeimg.pl/150/00abee/fff?text=twitter" />
+                    <img class="depth1730" src="http://fakeimg.pl/150/00abee/fff?text=twitter" />
+                    <img class="depth1790" src="http://fakeimg.pl/150/00abee/fff?text=twitter" />
+                </section>
+            </div>
+        </div>
+    </body>
+</html>
