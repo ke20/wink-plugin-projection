@@ -48,7 +48,7 @@ and open the template in the editor.
         <script type="text/javascript">
             
             var init = function() {
-                new wink.plugins.Projection({
+                var p = new wink.plugins.Projection({
                     target: 'wrapper',
                     layers_class_prefix: 'depth',
                     layers: [
@@ -62,6 +62,10 @@ and open the template in the editor.
                         }
                     ]
                 });
+                
+                p.setPerspective(75);
+                p.setPerspectiveOrigin('25%', '75%');
+                p.move_forward();
             };
             
         </script>
@@ -88,7 +92,7 @@ and open the template in the editor.
                     <img src="http://fakeimg.pl/150/00abee/fff?text=twitter" />
                 </section>
                 
-                <section id="section3" class="depth600">
+                <section id="section4" class="depth600">
                     <img class="depth605" src="http://fakeimg.pl/150/00abee/fff?text=twitter" />
                     <img class="depth627" src="http://fakeimg.pl/150/00abee/fff?text=twitter" />
                     <img src="http://fakeimg.pl/150/00abee/fff?text=twitter" />
@@ -105,13 +109,15 @@ and open the template in the editor.
                     <img class="depth630" src="http://fakeimg.pl/150/00abee/fff?text=twitter" />
                     <img class="depth650" src="http://fakeimg.pl/150/00abee/fff?text=twitter" />
                 </section>
+                
                 <section id="section4" class="depth700">
                     <img class="depth750" src="http://fakeimg.pl/150/00abee/fff?text=twitter" />
                     <img class="depth720" src="http://fakeimg.pl/150/00abee/fff?text=twitter" />
                     <img class="depth730" src="http://fakeimg.pl/150/00abee/fff?text=twitter" />
                     <img class="depth790" src="http://fakeimg.pl/150/00abee/fff?text=twitter" />
                 </section>
-                <section id="section5" class="depth1700">
+                
+                <section id="section4" class="depth1700">
                     <img class="depth1750" src="http://fakeimg.pl/150/00abee/fff?text=twitter" />
                     <img class="depth1720" src="http://fakeimg.pl/150/00abee/fff?text=twitter" />
                     <img class="depth1730" src="http://fakeimg.pl/150/00abee/fff?text=twitter" />

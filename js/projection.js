@@ -13,7 +13,54 @@
  */
 define(['../../../_amd/core', '../../../ux/gesture/js/gesture.js'], function(wink)
 {   
-    wink.plugins.Projection = function(properties) 
+    /**
+     * @class Implements a projection effect navigation
+     * 
+     * This plugin allow you to implement easily a navigation by projection, a depth effect.<br />
+     * Define your sections with their depth values and an other for each children if you want.<br />
+     * Use Javascript and/or CSS class name in your HTML for define each depth values of your HTML elements.
+     * 
+     * @param {object} properties The properties object
+     * @param {string} properties.target the dom id container
+     * @param {object} [properties.layers=[]] Define depth values of the HTML elements
+     * @param {string} [properties.layers_prefix_class="depth"] Define the class name prefix for get the depth 
+     * @param {integer}[properties.speed=10] Define the speed
+     * @param {object} [properties.callbacks={}] Define callbacks for add customs effect or others process. (startScrolling, scrolling, endScrolling)
+     * 
+     * @requires wink.ux.gesture
+     * 
+     * @example
+     * 
+     *  new wink.plugins.Projection({
+     *      target: 'wrapper',
+     *      speed: 5,
+     *      layers: [
+     *          {
+     *              element: wink.byId('section1'),
+     *              depth: 100,
+     *              children: [
+     *                  { element: wink.byId('section1').children[0], depth: 122 },
+     *                  { element: wink.byId('section1').children[1], depth: 176 },
+     *                  { element: wink.byId('section1').children[2], depth: 180 }
+     *              ]
+     *          },
+     *          {
+     *              element: wink.byId('section2'),
+     *              depth: 300,
+     *              children: [
+     *                  { element: wink.byId('section2').children[0], depth: 315 },
+     *                  { element: wink.byId('section2').children[1], depth: 355 }
+     *              ]
+     *          }
+     *      ]
+     *  });
+     * 
+     * @compatibility TODO
+     * 
+     * @see <a href="WINK_ROOT_URL/plugins/projection/test/test_projection_1.html" target="_blank">Test page</a>
+     * 
+     */
+    wink.plugins.Projection = function(properties)
     {
         /**
          * Unique identifier
@@ -48,6 +95,19 @@ define(['../../../_amd/core', '../../../ux/gesture/js/gesture.js'], function(win
          */
         this.speed = 10;
         
+        /**
+         * Callbacks available
+         * 
+         * @property callbacks
+         * @type object
+         */
+        this.callbacks = {};
+        this._cb_args = {
+            current: 0,
+            from: 0,
+            to: 0
+        };
+        
         this._perspective = 100;
         this._perspectiveOrigin = {
             x: '50%',
@@ -64,18 +124,17 @@ define(['../../../_amd/core', '../../../ux/gesture/js/gesture.js'], function(win
         this._timeout = null;
         this._fps = 1000/60;
         
-        this._depths = {
-            current: null
-        };
+        this._currPos = null;
         
         if(!this._validateProperties()) { 
             return false; }
         
+        this._initProperties();
         this._initDOM();
         this._initMap();
         this._initListeners();
         this._parseDOM();
-        this._translateElements(this._depths.current);
+        this._translateElements(this._currPos);
     };
     
     wink.plugins.Projection.prototype = 
@@ -83,17 +142,61 @@ define(['../../../_amd/core', '../../../ux/gesture/js/gesture.js'], function(win
         move_forward: function() {
             if(this._timeout != null)
                 return;
-
-            var next = this._getNextLayer();
-            this._moveTo(next.depth);
+            
+            var layer = this._getNextLayer();
+            this._cb_args.from = this._currPos;
+            this._cb_args.to = layer.depth;
+            wink.publish('/projection/event/scrolling/start', this._cb_args);
+            
+            this._moveTo(layer.depth);
         },
         
         move_backward: function() {
             if(this._timeout != null)
                 return;
-
-            var prev = this._getPreviousLayer();
-            this._moveTo(prev.depth);
+            
+            var layer = this._getPreviousLayer();
+            this._cb_args.from = this._currPos;
+            this._cb_args.to = layer.depth;
+            wink.publish('/projection/event/scrolling/start', this._cb_args);
+            
+            this._moveTo(layer.depth);
+        },
+        
+        setPerspective: function(value) {
+            this._perspective = value;
+            this._initDOM();
+        },
+        
+        setPerspectiveOriginX: function(value) {
+            this.setPerspectiveOrigin(value, this._perspectiveOrigin.y);
+        },
+        
+        setPerspectiveOriginY: function(value) {
+            this.setPerspectiveOrigin(this._perspectiveOrigin.x, value);
+        },
+        
+        setPerspectiveOrigin: function(x, y) {
+            this._perspectiveOrigin.x = x;
+            this._perspectiveOrigin.y = y;
+            this._initDOM();
+        },
+        
+        setDepth: function(value) {
+            this._currPos = value;
+            this._translateElements(value);
+        },
+    
+        _initProperties: function() {
+            var cbs = this.callbacks;
+            if(wink.isSet(cbs.startScrolling) && wink.isCallback(cbs.startScrolling))
+                wink.subscribe('/projection/event/scrolling/start', cbs.startScrolling);
+            
+            if(wink.isSet(cbs.scrolling) && wink.isCallback(cbs.scrolling))
+                wink.subscribe('/projection/event/scrolling', cbs.scrolling);
+            
+            if(wink.isSet(cbs.endScrolling) && wink.isCallback(cbs.endScrolling))
+                wink.subscribe('/projection/event/scrolling/end', cbs.endScrolling);
         },
     
         _validateProperties: function() {
@@ -139,63 +242,34 @@ define(['../../../_amd/core', '../../../ux/gesture/js/gesture.js'], function(win
         
         _parseDOM: function() 
         {
-            var list_sections = wink.query('section', this._target);
-            
-            var section=null,
-                className=null,  
-                children=null,
-                key=null;
+            var list_sections = wink.query('section', this._target),
+                section = null,
+                layer   = null;
             
             for(var i=0, l=list_sections.length; i < l; i++) 
             {
                 try
                 {
                     section = list_sections[i];
-                    if(wink.isNull(section.id))
+                    if(wink.isNull(section.id) || wink.trim(section.id).length == 0)
                         throw Error('The section '+(i+1)+' has not id, please set one');
 
-                    var layer = this.layers[this._map[section.id]];
-                    if(!wink.isSet(layer)) 
-                    {
-                        // Define layer structure
-                        layer = { 
-                            children: [],
-                            depth: 0,
-                            element: section
-                        };
-                        
-                        // Check an existing class for get the depth
-                        className = section.className;
-                        if(wink.isNull(className) || !className.match(this.layers_prefix_class))
-                            throw Error('The section "'+section.id+'" has no class with the depth prefix, please set one');
-                        layer.depth = this._getDepthFromClass(className);
-                        
-                        // Get children with their depths
-                        children = section.children;
-                        for(var j=0, l2=children.length; j < l2; j++) {
-                            className = children[j].className;
-                            if(wink.isNull(className) || !className.match(this.layers_prefix_class))
-                                className = section.className;
-
-                            layer.children.push({
-                                depth: this._getDepthFromClass(className),
-                                element: children[j]
-                            });
-                        }
-
-                        // Add layer to the map
-                        key = this.layers.push(layer);
-                        this._map[section.id] = key;
+                    layer = this.layers[this._map[section.id]];
+                    if(!wink.isSet(layer)) {
+                        layer = this._addLayerItemFromDom(section);
                     }
-
+                    
+                    // Keep the 3d context for each element
                     wink.fx.apply(layer.element, {
                         'transform-style': 'preserve-3d'
                     });
 
                     // Start by the dephest element
-                    if(this._depths.current == null 
-                    || this._depths.current > layer.depth)
-                        this._depths.current = layer.depth;
+                    if(this._currPos == null 
+                    || this._currPos > layer.depth) {
+                        this._currPos = layer.depth;
+                        this._cb_args.current = layer.depth;
+                    }
                 }
                 catch(error) {
                     wink.log(error.message);
@@ -203,6 +277,42 @@ define(['../../../_amd/core', '../../../ux/gesture/js/gesture.js'], function(win
             }
             
             this._sortLayers();
+        },
+        
+        _addLayerItemFromDom: function(domNode) 
+        {
+            // Define layer structure
+            var layer = { 
+                children: [],
+                depth: 0,
+                element: domNode
+            };
+
+            // Check an existing class for get the depth
+            var className = domNode.className;
+            if(wink.isNull(className) || !className.match(this.layers_prefix_class))
+                throw Error('The section "'+domNode.id+'" has no class with the depth prefix, please set one');
+            layer.depth = this._getDepthFromClass(className);
+
+            // Get children with their depths
+            var children = domNode.children;
+            for(var j=0, l2=children.length; j < l2; j++) 
+            {
+                // If no class name, get it from parent
+                className = children[j].className;
+                if(wink.isNull(className) || !className.match(this.layers_prefix_class))
+                    className = domNode.className;
+
+                layer.children.push({
+                    depth: this._getDepthFromClass(className),
+                    element: children[j]
+                });
+            }
+
+            // Add layer to the map
+            var key = this.layers.push(layer);
+            this._map[domNode.id] = key;
+            return layer;
         },
         
         _sortLayers: function() {
@@ -280,19 +390,29 @@ define(['../../../_amd/core', '../../../ux/gesture/js/gesture.js'], function(win
             return this.layers[this._used];
         },
         
-        _moveTo: function(depth) {
-            if((this._depths.current + this.speed) > depth
-            && (this._depths.current - this.speed) < depth) {
+        _moveTo: function(depth) 
+        {
+            if((this._currPos + this.speed) > depth
+            && (this._currPos - this.speed) < depth) 
+            {
                 this._translateElements(depth);
                 clearTimeout(this._timeout);
                 this._timeout = null;
-            } else {
-                if(this._depths.current > depth)
-                    this._depths.current -= this.speed;
+                
+                wink.publish('/projection/event/scrolling/end');
+            } 
+            else 
+            {
+                if(this._currPos > depth)
+                    this._currPos -= this.speed;
                 else
-                    this._depths.current += this.speed;
-
-                this._translateElements(this._depths.current);
+                    this._currPos += this.speed;
+                
+                this._translateElements(this._currPos);
+                
+                this._cb_args.current = this._currPos;
+                wink.publish('/projection/event/scrolling', this._cb_args);
+                
                 this._timeout = setTimeout(wink.bind(this._moveTo, this), this._fps, depth);
             }
         }

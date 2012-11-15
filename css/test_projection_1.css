@@ -32,7 +32,6 @@ div#wrapper {
 
 div#wrapper section {
     position: absolute;
-    width: 100%;
 }
 
 section > * {
