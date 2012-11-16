@@ -46,7 +46,6 @@ and open the template in the editor.
         <!-- END FONTS -->
         
         <script type="text/javascript">
-            
             var init = function() 
             {
                 var fx = wink.fx,
@@ -88,6 +87,25 @@ and open the template in the editor.
                 
                 projection.setPerspective(75);
                 projection.setPerspectiveOrigin('20%', '75%');
+                
+                
+                //FF doesn't recognize mousewheel as of FF3.x
+                var _mousewheelevt=(/Firefox/i.test(navigator.userAgent))? 
+                    "DOMMouseScroll" : "mousewheel";
+
+                var func = function(e) {
+                    e.preventDefault();
+
+                    if(e.wheelDeltaY > 0) { this.move_forward(); }
+                    else
+                    if(e.wheelDeltaY < 0) { this.move_backward(); }
+                };
+
+                if (document.attachEvent) //if IE (and Opera depending on user setting) 
+                    document.attachEvent("on"+_mousewheelevt, wink.bind(func, projection));
+                else 
+                if (document.addEventListener) //WC3 browsers
+                    document.addEventListener(_mousewheelevt, wink.bind(func, projection), false);
             };
             
             
