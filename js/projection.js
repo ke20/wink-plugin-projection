@@ -455,28 +455,8 @@ define(['../../../_amd/core', '../../../ux/gesture/js/gesture.js'], function(win
          * Initializes listeners
          */
         _initListeners: function() {
-            if(wink.ua.isMobile) {
-                wink.ux.gesture.listenTo(this._target, "enlargement", { context: this, method: "move_forward" }, { preventDefault: true });
-                wink.ux.gesture.listenTo(this._target, "narrowing", { context: this, method: "move_backward" }, { preventDefault: true });
-            } else {
-                //FF doesn't recognize mousewheel as of FF3.x
-                var _mousewheelevt=(/Firefox/i.test(navigator.userAgent))? 
-                    "DOMMouseScroll" : "mousewheel";
-                
-                var func = function(e) {
-                    e.preventDefault();
-                    
-                    if(e.wheelDeltaY > 0) { this.move_forward(); }
-                    else
-                    if(e.wheelDeltaY < 0) { this.move_backward(); }
-                };
-                
-                if (document.attachEvent) //if IE (and Opera depending on user setting) 
-                    document.attachEvent("on"+_mousewheelevt, wink.bind(func, this));
-                else 
-                if (document.addEventListener) //WC3 browsers
-                    document.addEventListener(_mousewheelevt, wink.bind(func, this), false);
-            }
+            wink.ux.gesture.listenTo(this._target, "enlargement", { context: this, method: "move_forward" }, { preventDefault: true });
+            wink.ux.gesture.listenTo(this._target, "narrowing", { context: this, method: "move_backward" }, { preventDefault: true });
         },
         
         /**
