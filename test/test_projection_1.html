@@ -88,24 +88,43 @@ and open the template in the editor.
                 projection.setPerspective(75);
                 projection.setPerspectiveOrigin('20%', '75%');
                 
+                // Navigation by scrolling or enlargement for mobiles and tablets
+                if(wink.ua.isMobile) {
+                    var touchZone = wink.byId('touch-zone');
+                    wink.ux.gesture.listenTo(touchZone, "enlargement", { context: projection, method: "move_forward" }, { preventDefault: true });
+                    wink.ux.gesture.listenTo(touchZone, "narrowing", { context: projection, method: "move_backward" }, { preventDefault: true });
+                } else {
+                    //FF doesn't recognize mousewheel as of FF3.x
+                    var _mousewheelevt=(/Firefox/i.test(navigator.userAgent))? 
+                        "DOMMouseScroll" : "mousewheel";
+
+                    var func = function(e) {
+                        e.preventDefault();
+
+                        if(e.wheelDeltaY > 0) { this.move_forward(); }
+                        else
+                        if(e.wheelDeltaY < 0) { this.move_backward(); }
+                    };
+
+                    if (document.attachEvent) //if IE (and Opera depending on user setting) 
+                        document.attachEvent("on"+_mousewheelevt, wink.bind(func, projection));
+                    else 
+                    if (document.addEventListener) //WC3 browsers
+                        document.addEventListener(_mousewheelevt, wink.bind(func, projection), false);
+                }
                 
-                //FF doesn't recognize mousewheel as of FF3.x
-                var _mousewheelevt=(/Firefox/i.test(navigator.userAgent))? 
-                    "DOMMouseScroll" : "mousewheel";
-
-                var func = function(e) {
-                    e.preventDefault();
-
-                    if(e.wheelDeltaY > 0) { this.move_forward(); }
-                    else
-                    if(e.wheelDeltaY < 0) { this.move_backward(); }
-                };
-
-                if (document.attachEvent) //if IE (and Opera depending on user setting) 
-                    document.attachEvent("on"+_mousewheelevt, wink.bind(func, projection));
-                else 
-                if (document.addEventListener) //WC3 browsers
-                    document.addEventListener(_mousewheelevt, wink.bind(func, projection), false);
+                // Add event on the menu items
+                var menuItems = wink.byId('menuItems').children;
+                for(var i=0, l=menuItems.length; i < l; i++) 
+                {
+                    wink.ux.touch.addListener(menuItems[i], 'start', function() {});
+                    wink.ux.touch.addListener(menuItems[i], 'move',  function() {});
+                    wink.ux.touch.addListener(menuItems[i], 'end',   (function(li) {
+                        return function() {
+                            projection.moveTo(wink.byId(li.id.replace('to_', '')));
+                        };
+                    })(menuItems[i]));
+                }
             };
             
             
@@ -164,6 +183,19 @@ and open the template in the editor.
                     <img class="depth1730" src="http://fakeimg.pl/150/723bff/fff?text=5" />
                     <img class="depth1790" src="http://fakeimg.pl/150/723bff/fff?text=5" />
                 </section>
+                
+                <div id="touch-zone">
+                    <span>Spread / Pinch</span>
+                </div>
+            </div>
+            <div id="levels-zone">
+                <ul id="menuItems">
+                    <li id="to_section1">Section 1</li>
+                    <li id="to_section2">Section 2</li>
+                    <li id="to_section3">Section 3</li>
+                    <li id="to_section4">Section 4</li>
+                    <li id="to_section5">Section 5</li>
+                </ul>
             </div>
         </div>
     </body>

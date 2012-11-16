@@ -138,7 +138,6 @@ define(['../../../_amd/core', '../../../ux/gesture/js/gesture.js'], function(win
         this._initProperties();
         this._initDOM();
         this._initMap();
-        this._initListeners();
         this._parseDOM();
         this._translateElements(this._currPos);
     };
@@ -266,6 +265,25 @@ define(['../../../_amd/core', '../../../ux/gesture/js/gesture.js'], function(win
         getPreviousPanel: function() {
             var prev = this._used - 1;
             return prev < 0 ? 0 : prev;
+        },
+        
+        /**
+         * Moves in translation to the target section
+         * 
+         * @param {HTMLElement} section
+         */
+        moveTo: function(section) {
+            if(this._timeout != null)
+                this._stopMove();
+                
+            var layer_key = this._map[section.id];
+            if(wink.isNull(layer_key)) {
+                wink.log('[Error] - projection - moveTo: The section is not correct');
+                return;
+            }
+            
+            this._used = layer_key;
+            this._moveTo(this.layers[layer_key].depth);
         },
         
         /**
@@ -437,26 +455,24 @@ define(['../../../_amd/core', '../../../ux/gesture/js/gesture.js'], function(win
             }
             
             // Add layer to the map
-            var key = this.layers.push(layer);
+            var key = this.layers.push(layer) - 1;
             this._map[domNode.id] = key;
             return layer;
         },
         
         /**
          * Sort the layers tab according to the depth
+         * and update the mapping
          */
         _sortLayers: function() {
             this.layers.sort(function(a, b) {
                 return a.depth - b.depth;
             });
-        },
-        
-        /**
-         * Initializes listeners
-         */
-        _initListeners: function() {
-            wink.ux.gesture.listenTo(this._target, "enlargement", { context: this, method: "move_forward" }, { preventDefault: true });
-            wink.ux.gesture.listenTo(this._target, "narrowing", { context: this, method: "move_backward" }, { preventDefault: true });
+            
+            this._map = {};
+            for(var i=0, l=this.layers.length; i < l; i++) {
+                this._map[this.layers[i].element.id] = i;
+            }
         },
         
         /**
