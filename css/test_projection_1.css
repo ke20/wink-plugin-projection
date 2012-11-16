@@ -36,7 +36,6 @@ div#wrapper section {
 
 section > * {
     position: relative;
-    border: 1px solid #fff;
     opacity: 0.8;
     float: left;
     margin-left: 15px;

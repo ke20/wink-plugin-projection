@@ -47,26 +47,49 @@ and open the template in the editor.
         
         <script type="text/javascript">
             
-            var init = function() {
-                var p = new wink.plugins.Projection({
+            var init = function() 
+            {
+                var fx = wink.fx,
+                    elemsToRotate = ['rotate', 'rotate1', 'rotate2', 'rotate3', 'rotate4'],
+                    elemsToRotate_l = elemsToRotate.length,
+                    percent = 0, depth = 0, elem = null;
+                
+                for(var i=0; i < elemsToRotate_l; i++) {
+                    elemsToRotate[i] = wink.byId(elemsToRotate[i]);
+                }
+                
+                var projection = new wink.plugins.Projection({
                     target: 'wrapper',
+                    speed: 10,
+                    callbacks: {
+                        onSliding: function(args) {
+                            depth = args.depth;
+                            percent = (depth.current - depth.start) / (depth.end - depth.start);
+                            
+                            elem = null;
+                            for(var i=0; i < elemsToRotate_l; i++) {
+                                elem = elemsToRotate[i];
+                                fx.setTransform(elem, fx.getTransform(elem) + ' rotateY('+(percent * 360)+'deg)');
+                            }
+                        }
+                    },
                     layers_class_prefix: 'depth',
                     layers: [
                         {
                             element: wink.byId('section2'),
                             depth: 300,
                             children: [
-                                { element: wink.byId('section2').children[0], depth: 315 },
+                                { element: wink.byId('section2').children[0], depth: 385 },
                                 { element: wink.byId('section2').children[1], depth: 355 }
                             ]
                         }
                     ]
                 });
                 
-                p.setPerspective(75);
-                p.setPerspectiveOrigin('25%', '75%');
-                p.move_forward();
+                projection.setPerspective(75);
+                projection.setPerspectiveOrigin('20%', '75%');
             };
+            
             
         </script>
     </head>
@@ -79,49 +102,49 @@ and open the template in the editor.
         <div id="container">
             <div id="wrapper">
                 <section id="section1" class="depth100">
-                    <h1>Titre 1</h2>
-                    <img class="depth170" src="http://fakeimg.pl/150/00abee/fff?text=twitter" />
-                    <img class="depth150" src="http://fakeimg.pl/150/00abee/fff?text=twitter" />
-                    <img src="http://fakeimg.pl/150/00abee/fff?text=twitter" />
-                    <img class="depth250" src="http://fakeimg.pl/150/00abee/fff?text=twitter" />
-                    <img class="depth110" src="http://fakeimg.pl/150/00abee/fff?text=twitter" />
+                    <h1>Titre 1</h1>
+                    <img class="depth170" src="http://fakeimg.pl/150/00abee/fff?text=1" />
+                    <img class="depth150" src="http://fakeimg.pl/300/00abee/fff?text=1" />
+                    <img src="http://fakeimg.pl/150/00abee/fff?text=1" />
+                    <img class="depth250" src="http://fakeimg.pl/150/00abee/fff?text=1" />
+                    <img class="depth110" src="http://fakeimg.pl/150/00abee/fff?text=1" />
                 </section>
                 
                 <section id="section2">
-                    <img src="http://fakeimg.pl/150/00abee/fff?text=twitter" />
-                    <img src="http://fakeimg.pl/150/00abee/fff?text=twitter" />
+                    <img id="rotate" src="http://fakeimg.pl/450/69ff2f/fff?text=2" />
+                    <img src="http://fakeimg.pl/150/69ff2f/fff?text=2" />
                 </section>
                 
                 <section id="section3" class="depth600">
-                    <img class="depth605" src="http://fakeimg.pl/150/00abee/fff?text=twitter" />
-                    <img class="depth627" src="http://fakeimg.pl/150/00abee/fff?text=twitter" />
-                    <img src="http://fakeimg.pl/150/00abee/fff?text=twitter" />
-                    <img class="depth650" src="http://fakeimg.pl/150/00abee/fff?text=twitter" />
-                    <img class="depth690" src="http://fakeimg.pl/150/00abee/fff?text=twitter" />
-                    <img class="depth690" src="http://fakeimg.pl/150/00abee/fff?text=twitter" />
-                    <img class="depth690" src="http://fakeimg.pl/150/00abee/fff?text=twitter" />
-                    <img class="depth690" src="http://fakeimg.pl/150/00abee/fff?text=twitter" />
-                    <img class="depth630" src="http://fakeimg.pl/150/00abee/fff?text=twitter" />
-                    <img class="depth660" src="http://fakeimg.pl/150/00abee/fff?text=twitter" />
-                    <img class="depth610" src="http://fakeimg.pl/150/00abee/fff?text=twitter" />
-                    <img class="depth684" src="http://fakeimg.pl/150/00abee/fff?text=twitter" />
-                    <img class="depth634" src="http://fakeimg.pl/150/00abee/fff?text=twitter" />
-                    <img class="depth630" src="http://fakeimg.pl/150/00abee/fff?text=twitter" />
-                    <img class="depth650" src="http://fakeimg.pl/150/00abee/fff?text=twitter" />
+                    <img class="depth605" src="http://fakeimg.pl/150/ebff6d/fff?text=3" />
+                    <img class="depth627" src="http://fakeimg.pl/150/ebff6d/fff?text=3" />
+                    <img src="http://fakeimg.pl/150/ebff6d/fff?text=3" />
+                    <img class="depth650" src="http://fakeimg.pl/150/ebff6d/fff?text=3" />
+                    <img class="depth690" src="http://fakeimg.pl/150/ebff6d/fff?text=3" />
+                    <img class="depth690" src="http://fakeimg.pl/150/ebff6d/fff?text=3" />
+                    <img class="depth690" src="http://fakeimg.pl/150/ebff6d/fff?text=3" />
+                    <img class="depth690" src="http://fakeimg.pl/150/ebff6d/fff?text=3" />
+                    <img class="depth630" src="http://fakeimg.pl/150/ebff6d/fff?text=3" />
+                    <img id="rotate1" class="depth660" src="http://fakeimg.pl/150/ebff6d/fff?text=3" />
+                    <img class="depth610" src="http://fakeimg.pl/150/ebff6d/fff?text=3" />
+                    <img class="depth684" src="http://fakeimg.pl/150/ebff6d/fff?text=3" />
+                    <img class="depth634" src="http://fakeimg.pl/150/ebff6d/fff?text=3" />
+                    <img id="rotate3" class="depth630" src="http://fakeimg.pl/150/ebff6d/fff?text=3" />
+                    <img id="rotate4" class="depth650" src="http://fakeimg.pl/150/ebff6d/fff?text=3" />
                 </section>
                 
                 <section id="section4" class="depth700">
-                    <img class="depth750" src="http://fakeimg.pl/150/00abee/fff?text=twitter" />
-                    <img class="depth720" src="http://fakeimg.pl/150/00abee/fff?text=twitter" />
-                    <img class="depth730" src="http://fakeimg.pl/150/00abee/fff?text=twitter" />
-                    <img class="depth790" src="http://fakeimg.pl/150/00abee/fff?text=twitter" />
+                    <img class="depth750" src="http://fakeimg.pl/150/ff3e0f/fff?text=4" />
+                    <img id="rotate2"class="depth720" src="http://fakeimg.pl/150/ff3e0f/fff?text=4" />
+                    <img class="depth730" src="http://fakeimg.pl/150/ff3e0f/fff?text=4" />
+                    <img class="depth790" src="http://fakeimg.pl/150/ff3e0f/fff?text=4" />
                 </section>
                 
                 <section id="section5" class="depth1700">
-                    <img class="depth1750" src="http://fakeimg.pl/150/00abee/fff?text=twitter" />
-                    <img class="depth1720" src="http://fakeimg.pl/150/00abee/fff?text=twitter" />
-                    <img class="depth1730" src="http://fakeimg.pl/150/00abee/fff?text=twitter" />
-                    <img class="depth1790" src="http://fakeimg.pl/150/00abee/fff?text=twitter" />
+                    <img class="depth1750" src="http://fakeimg.pl/150/723bff/fff?text=5" />
+                    <img class="depth1720" src="http://fakeimg.pl/150/723bff/fff?text=5" />
+                    <img class="depth1730" src="http://fakeimg.pl/150/723bff/fff?text=5" />
+                    <img class="depth1790" src="http://fakeimg.pl/150/723bff/fff?text=5" />
                 </section>
             </div>
         </div>
