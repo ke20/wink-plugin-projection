@@ -38,7 +38,7 @@ and open the template in the editor.
         <script type="text/javascript" src="../../../plugins/projection/js/projection.js"></script>
         
         <!-- STYLES -->
-        <link rel="stylesheet" href="../css/test_projection_1.css" type="text/css">
+        <link rel="stylesheet" href="css/test_projection_1.css" type="text/css">
         <!-- END STYLES -->
         
         <!-- FONTS -->
@@ -101,9 +101,9 @@ and open the template in the editor.
                     var func = function(e) {
                         e.preventDefault();
 
-                        if(e.wheelDeltaY > 0) { this.move_forward(); }
+                        if(e.wheelDeltaY > 0) { this.moveForward(); }
                         else
-                        if(e.wheelDeltaY < 0) { this.move_backward(); }
+                        if(e.wheelDeltaY < 0) { this.moveBackward(); }
                     };
 
                     if (document.attachEvent) //if IE (and Opera depending on user setting) 
@@ -138,13 +138,13 @@ and open the template in the editor.
         
         <div id="container">
             <div id="wrapper">
-                <section id="section1" class="depth100">
+                <section id="section1" data-depth="100">
                     <h1>Titre 1</h1>
-                    <img class="depth170" src="http://fakeimg.pl/150/00abee/fff?text=1" />
-                    <img class="depth150" src="http://fakeimg.pl/300/00abee/fff?text=1" />
+                    <img data-depth="170" src="http://fakeimg.pl/150/00abee/fff?text=1" />
+                    <img data-depth="150" src="http://fakeimg.pl/300/00abee/fff?text=1" />
                     <img src="http://fakeimg.pl/150/00abee/fff?text=1" />
-                    <img class="depth250" src="http://fakeimg.pl/150/00abee/fff?text=1" />
-                    <img class="depth110" src="http://fakeimg.pl/150/00abee/fff?text=1" />
+                    <img data-depth="250" src="http://fakeimg.pl/150/00abee/fff?text=1" />
+                    <img data-depth="110" src="http://fakeimg.pl/150/00abee/fff?text=1" />
                 </section>
                 
                 <section id="section2">
@@ -152,36 +152,36 @@ and open the template in the editor.
                     <img src="http://fakeimg.pl/150/69ff2f/fff?text=2" />
                 </section>
                 
-                <section id="section3" class="depth600">
-                    <img class="depth605" src="http://fakeimg.pl/150/ebff6d/fff?text=3" />
-                    <img class="depth627" src="http://fakeimg.pl/150/ebff6d/fff?text=3" />
+                <section id="section3" data-depth="600">
+                    <img data-depth="605" src="http://fakeimg.pl/150/ebff6d/fff?text=3" />
+                    <img data-depth="627" src="http://fakeimg.pl/150/ebff6d/fff?text=3" />
                     <img src="http://fakeimg.pl/150/ebff6d/fff?text=3" />
-                    <img class="depth650" src="http://fakeimg.pl/150/ebff6d/fff?text=3" />
-                    <img class="depth690" src="http://fakeimg.pl/150/ebff6d/fff?text=3" />
-                    <img class="depth690" src="http://fakeimg.pl/150/ebff6d/fff?text=3" />
-                    <img class="depth690" src="http://fakeimg.pl/150/ebff6d/fff?text=3" />
-                    <img class="depth690" src="http://fakeimg.pl/150/ebff6d/fff?text=3" />
-                    <img class="depth630" src="http://fakeimg.pl/150/ebff6d/fff?text=3" />
-                    <img id="rotate1" class="depth660" src="http://fakeimg.pl/150/ebff6d/fff?text=3" />
-                    <img class="depth610" src="http://fakeimg.pl/150/ebff6d/fff?text=3" />
-                    <img class="depth684" src="http://fakeimg.pl/150/ebff6d/fff?text=3" />
-                    <img class="depth634" src="http://fakeimg.pl/150/ebff6d/fff?text=3" />
-                    <img id="rotate3" class="depth630" src="http://fakeimg.pl/150/ebff6d/fff?text=3" />
-                    <img id="rotate4" class="depth650" src="http://fakeimg.pl/150/ebff6d/fff?text=3" />
+                    <img data-depth="650" src="http://fakeimg.pl/150/ebff6d/fff?text=3" />
+                    <img data-depth="690" src="http://fakeimg.pl/150/ebff6d/fff?text=3" />
+                    <img data-depth="690" src="http://fakeimg.pl/150/ebff6d/fff?text=3" />
+                    <img data-depth="690" src="http://fakeimg.pl/150/ebff6d/fff?text=3" />
+                    <img data-depth="690" src="http://fakeimg.pl/150/ebff6d/fff?text=3" />
+                    <img data-depth="630" src="http://fakeimg.pl/150/ebff6d/fff?text=3" />
+                    <img data-depth="660" src="http://fakeimg.pl/150/ebff6d/fff?text=3" id="rotate1" />
+                    <img data-depth="610" src="http://fakeimg.pl/150/ebff6d/fff?text=3" />
+                    <img data-depth="684" src="http://fakeimg.pl/150/ebff6d/fff?text=3" />
+                    <img data-depth="634" src="http://fakeimg.pl/150/ebff6d/fff?text=3" />
+                    <img data-depth="630" src="http://fakeimg.pl/150/ebff6d/fff?text=3" id="rotate3" />
+                    <img data-depth="650" src="http://fakeimg.pl/150/ebff6d/fff?text=3" id="rotate4" />
                 </section>
                 
-                <section id="section4" class="depth700">
-                    <img class="depth750" src="http://fakeimg.pl/150/ff3e0f/fff?text=4" />
-                    <img id="rotate2"class="depth720" src="http://fakeimg.pl/150/ff3e0f/fff?text=4" />
-                    <img class="depth730" src="http://fakeimg.pl/150/ff3e0f/fff?text=4" />
-                    <img class="depth790" src="http://fakeimg.pl/150/ff3e0f/fff?text=4" />
+                <section id="section4" data-depth="700">
+                    <img data-depth="750" src="http://fakeimg.pl/150/ff3e0f/fff?text=4" />
+                    <img data-depth="720" src="http://fakeimg.pl/150/ff3e0f/fff?text=4" id="rotate2" />
+                    <img data-depth="730" src="http://fakeimg.pl/150/ff3e0f/fff?text=4" />
+                    <img data-depth="790" src="http://fakeimg.pl/150/ff3e0f/fff?text=4" />
                 </section>
                 
-                <section id="section5" class="depth1700">
-                    <img class="depth1750" src="http://fakeimg.pl/150/723bff/fff?text=5" />
-                    <img class="depth1720" src="http://fakeimg.pl/150/723bff/fff?text=5" />
-                    <img class="depth1730" src="http://fakeimg.pl/150/723bff/fff?text=5" />
-                    <img class="depth1790" src="http://fakeimg.pl/150/723bff/fff?text=5" />
+                <section id="section5" data-depth="1700">
+                    <img data-depth="1750" src="http://fakeimg.pl/150/723bff/fff?text=5" />
+                    <img data-depth="1720" src="http://fakeimg.pl/150/723bff/fff?text=5" />
+                    <img data-depth="1730" src="http://fakeimg.pl/150/723bff/fff?text=5" />
+                    <img data-depth="1790" src="http://fakeimg.pl/150/723bff/fff?text=5" />
                 </section>
                 
                 <div id="touch-zone">

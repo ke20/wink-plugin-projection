@@ -11,7 +11,7 @@
  *  
  * @author Kevin AUVINET
  */
-define(['../../../_amd/core', '../../../ux/gesture/js/gesture.js'], function(wink)
+define(['../../../_amd/core'], function(wink)
 {   
     var fx  = wink.fx,
         log = wink.log;
@@ -21,13 +21,12 @@ define(['../../../_amd/core', '../../../ux/gesture/js/gesture.js'], function(win
      * 
      * This plugin allow you to implement easily a navigation by projection, a depth effect.<br />
      * Defined your sections with their depth values and an other for each children if you want.<br />
-     * Use Javascript and/or CSS class name in your HTML for define each depth values of your HTML elements.<br />
+     * Use Javascript and/or HTML5 custom data "data-depth" attribute in your HTML for define each depth values of your HTML elements.<br />
      * Defined some callbacks for add effects during the navigation.
      * 
      * @param {object} properties The properties object
      * @param {string} properties.target the dom id container
      * @param {object} [properties.layers=[]] Define depth values of the HTML elements
-     * @param {string} [properties.layers_prefix_class="depth"] Define the class name prefix for get the depth 
      * @param {integer}[properties.speed=10] Define the speed
      * @param {object} [properties.callbacks={}] Define callbacks for add customs effect or others process. (onStartSliding, onSliding, onEndSliding)
      * 
@@ -88,15 +87,6 @@ define(['../../../_amd/core', '../../../ux/gesture/js/gesture.js'], function(win
         this.layers = [];
         
         /**
-         * Define a prefix for get layer and this depth
-         * 
-         * @property layers_prefix_class
-         * @type string
-         * @default depth
-         */
-        this.layers_prefix_class = "depth";
-        
-        /**
          * Navigation speed
          * 
          * @property speed
@@ -132,7 +122,7 @@ define(['../../../_amd/core', '../../../ux/gesture/js/gesture.js'], function(win
         
         
         if(!this._validateProperties()) { 
-            return false; 
+            return; 
         }
         
         this._initProperties();
@@ -145,9 +135,9 @@ define(['../../../_amd/core', '../../../ux/gesture/js/gesture.js'], function(win
     wink.plugins.Projection.prototype = 
     {
         /**
-         * Move at the next pannel
+         * Move at the next panel
          */
-        move_forward: function() {
+        moveForward: function() {
             if(!wink.isNull(this._timeout))
                 return;
             
@@ -164,9 +154,9 @@ define(['../../../_amd/core', '../../../ux/gesture/js/gesture.js'], function(win
         },
         
         /**
-         * Back to the previous pannel
+         * Back to the previous panel
          */
-        move_backward: function() {
+        moveBackward: function() {
             if(!wink.isNull(this._timeout))
                 return;
             
@@ -235,7 +225,7 @@ define(['../../../_amd/core', '../../../ux/gesture/js/gesture.js'], function(win
         },
         
         /**
-         * Returns the index of the current pannel (the pannel at the first plan).
+         * Returns the index of the current panel (the panel at the first plan).
          * The first index is 0, second 1, etc...
          * 
          * @return {integer}
@@ -245,7 +235,7 @@ define(['../../../_amd/core', '../../../ux/gesture/js/gesture.js'], function(win
         },
         
         /**
-         * Returns the index of the next pannel (the pannel at the second plan)
+         * Returns the index of the next panel (the panel at the second plan)
          * The first index is 0, second 1, etc...
          * 
          * @return {integer}
@@ -257,7 +247,7 @@ define(['../../../_amd/core', '../../../ux/gesture/js/gesture.js'], function(win
         },
         
         /**
-         * Returns the index of the previous pannel (the first pannel behind the window)
+         * Returns the index of the previous panel (the first panel behind the window)
          * The first index is 0, second 1, etc...
          * 
          * @return {integer}
@@ -293,7 +283,7 @@ define(['../../../_amd/core', '../../../ux/gesture/js/gesture.js'], function(win
          */
         _getArgs: function() {
             return {
-                'pannel': {
+                'panel': {
                     'next': this.getNextPannel(),
                     'current': this.getCurrentPanel(),
                     'prev': this.getPreviousPanel()
@@ -335,8 +325,6 @@ define(['../../../_amd/core', '../../../ux/gesture/js/gesture.js'], function(win
                     throw Error('Please define an existing dom node id for the target');
                 if(!wink.isInteger(this.speed) || this.speed <= 0) 
                     throw Error('Please define a positive value for the speed');
-                if(wink.trim(this.layers_prefix_class).length == 0) 
-                    throw Error('Please define a prefix class for your layers');
                 return true;
             } catch(error) {
                 wink.log('[Error] - Projection - _validateProperties: '+error.message);
@@ -378,7 +366,7 @@ define(['../../../_amd/core', '../../../ux/gesture/js/gesture.js'], function(win
         },
         
         /**
-         * Parses the DOM for get depth values from the elements class name 
+         * Parses the DOM for get depth values from the custom data attributes
          */
         _parseDOM: function() 
         {
@@ -433,23 +421,16 @@ define(['../../../_amd/core', '../../../ux/gesture/js/gesture.js'], function(win
                 element: domNode
             };
             
-            // Check an existing class for get the depth
-            var className = domNode.className;
-            if(wink.isNull(className) || !className.match(this.layers_prefix_class))
-                throw Error('The section "'+domNode.id+'" has no class with the depth prefix, please set one');
-            layer.depth = this._getDepthFromClass(className);
-            
+            // Check an existing depth
+            layer.depth = parseInt(domNode.getAttribute('data-depth'));
+            if(!wink.isInteger(layer.depth))
+                throw Error('The section "'+domNode.id+'" has no depth, please set one');
+                        
             // Get children with their depths
             var children = domNode.children;
-            for(var j=0, l2=children.length; j < l2; j++) 
-            {
-                // If no class name, get it from parent
-                className = children[j].className;
-                if(wink.isNull(className) || !className.match(this.layers_prefix_class))
-                    className = domNode.className;
-                
+            for(var j=0, l=children.length; j < l; j++) {
                 layer.children.push({
-                    depth: this._getDepthFromClass(className),
+                    depth: parseInt(children[j].getAttribute('data-depth')) || layer.depth,
                     element: children[j]
                 });
             }
@@ -473,17 +454,6 @@ define(['../../../_amd/core', '../../../ux/gesture/js/gesture.js'], function(win
             for(var i=0, l=this.layers.length; i < l; i++) {
                 this._map[this.layers[i].element.id] = i;
             }
-        },
-        
-        /**
-         * Returns the depth value of an element from its class name
-         * 
-         * @return {integer}
-         */
-        _getDepthFromClass: function(className) {
-            var pattern = eval('/'+this.layers_prefix_class+'((-)?[0-9]+)/');
-            var result = className.match(pattern)[1];
-            return parseInt(result);
         },
         
         /**
