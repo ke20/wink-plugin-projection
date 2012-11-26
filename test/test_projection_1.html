@@ -34,6 +34,8 @@ and open the template in the editor.
         <script type="text/javascript" src="../../../ux/touch/js/touch.js"></script>
         <!-- END CORE -->
         
+        <script type="text/javascript" src="../../../math/_matrix/js/matrix.js"></script>
+        <script type="text/javascript" src="../../../fx/_xyz/js/3dfx.js"></script>
 		<script type="text/javascript" src="../../../ux/gesture/js/gesture.js"></script>
         <script type="text/javascript" src="../../../plugins/projection/js/projection.js"></script>
         
@@ -48,6 +50,7 @@ and open the template in the editor.
         <script type="text/javascript">
             var init = function() 
             {
+                
                 var fx = wink.fx,
                     elemsToRotate = ['rotate', 'rotate1', 'rotate2', 'rotate3', 'rotate4'],
                     elemsToRotate_l = elemsToRotate.length,
@@ -67,8 +70,8 @@ and open the template in the editor.
                             
                             elem = null;
                             for(var i=0; i < elemsToRotate_l; i++) {
-                                elem = elemsToRotate[i];
-                                fx.setTransform(elem, fx.getTransform(elem) + ' rotateY('+(percent * 360)+'deg)');
+                               elem = elemsToRotate[i];
+                               fx.setTransform(elem, fx.getTransform(elem) + ' rotateY('+(percent * 360)+'deg)');
                             }
                         }
                     },
@@ -85,14 +88,14 @@ and open the template in the editor.
                     ]
                 });
                 
-                projection.setPerspective(75);
-                projection.setPerspectiveOrigin('20%', '75%');
+//                projection.setPerspective(75);
+//                projection.setPerspectiveOrigin('20%', '75%');
                 
                 // Navigation by scrolling or enlargement for mobiles and tablets
                 if(wink.ua.isMobile) {
                     var touchZone = wink.byId('touch-zone');
-                    wink.ux.gesture.listenTo(touchZone, "enlargement", { context: projection, method: "move_forward" }, { preventDefault: true });
-                    wink.ux.gesture.listenTo(touchZone, "narrowing", { context: projection, method: "move_backward" }, { preventDefault: true });
+                    wink.ux.gesture.listenTo(touchZone, "enlargement", { context: projection, method: "moveForward" }, { preventDefault: true });
+                    wink.ux.gesture.listenTo(touchZone, "narrowing", { context: projection, method: "moveBackward" }, { preventDefault: true });
                 } else {
                     //FF doesn't recognize mousewheel as of FF3.x
                     var _mousewheelevt=(/Firefox/i.test(navigator.userAgent))? 

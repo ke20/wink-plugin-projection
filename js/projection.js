@@ -11,10 +11,9 @@
  *  
  * @author Kevin AUVINET
  */
-define(['../../../_amd/core'], function(wink)
+define(['../../../_amd/core', '../../../fx/_xyz/js/3dfx.js'], function(wink)
 {   
-    var fx  = wink.fx,
-        log = wink.log;
+    var fx  = wink.fx;
     
     /**
      * @class Implements a projection effect navigation
@@ -485,7 +484,7 @@ define(['../../../_amd/core'], function(wink)
          * @param {integer} value
          */
         _translateTo: function(elem, value) {
-            fx.setTransform(elem, 'translateZ('+value+'px)');
+            fx.set3dTransform(elem, { type: 'translate', x: 0, y: 0, z: value });
         },
         
         /**
