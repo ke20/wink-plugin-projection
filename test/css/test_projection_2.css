@@ -1,0 +1,252 @@
+/* 
+    Document   : test_projection_2
+    Created on : 26 nov. 2012, 14:49:34
+    Author     : wdvq9874
+    Description:
+        Purpose of the stylesheet follows.
+*/
+
+html, body, div, h1, h2, h3, h4, p, ul, li,
+form, section, nav {
+    padding: 0;
+    margin: 0;
+}
+
+
+body {
+    background: #000;
+    color: #fff;
+    font-family: cabin, open-sans, sans-serif;
+    font-size: 93.8%;  /* 93.8% => 15px */
+}
+
+a {
+    color: #fff;
+    text-decoration: none;
+}
+
+a.selected {
+    color: #ff5500;
+    text-decoration: none;
+}
+
+p {
+    margin: 1em 0;
+    font-size: 1.333em;
+}
+
+div#container {
+    overflow: hidden;
+    height: 51.200em;
+    min-height: 51.200em;
+    width: 100%;
+}
+
+div#main-content {
+    background: url('../img/test2/halo.png') #000 no-repeat top left;
+    background-size: 43.400em 35.867em;
+    position: relative;
+    height: 44.665em;
+    min-height: 44.665em;
+}
+
+div#top-menu {
+    color: #ff5500;
+    margin-left: 31.35%;
+    padding-top: 3.55%;
+    width: 59.57%;
+}
+
+div#top-menu ul {
+    padding: 0;
+    margin: 0;
+    border-bottom: 1px solid #ff5500;
+}
+
+div#top-menu ul li {
+    margin: 0 3.667em 0 0;
+    padding: 0;
+    list-style-type: none;
+    display: inline-block;
+    text-align: center;
+    font-size: 1.133em;
+}
+
+div#top-menu ul li > span {
+    display: block;
+    font-size: 50%;
+    padding: 0.633em 0 0 0;
+    margin: -0.733em 0;
+}
+
+div#right-border {
+    position: absolute;
+    top: 5%;
+    left: 82.03%;
+    height: 70.80%;
+    min-height: 70.80%;
+    border-right: 1px solid #ff5500;
+    width: 1px;
+}
+
+div#projection-zone {
+    margin-top: 0%;
+    margin-left: 2.92%;
+    height: 70.80%;
+    min-height: 70.80%;
+    width: 82.03%;
+}
+
+div#projection-zone > section {
+    position: absolute;
+}
+
+div#touch-zone {
+    background: url('../img/test2/bg_ios.jpg') #6d7b7e repeat top left;
+    border-top: 1px solid #ff5500;
+    height: 6.300em; 
+    min-height: 6.300em;
+    position: relative;
+}
+
+div#touch-infos {
+    float: right;
+    text-align: center;
+    line-height: 1.0em;
+    font-size: 1em;
+    margin-right: 1em;
+}
+
+div#touch-infos p {
+    margin: 0.333em 0 1.5em 0;
+}
+
+div#finger_l ,
+div#finger_r {
+    position: absolute;
+    display: none;
+}
+
+div.fingerShadow {
+    background: url('../img/test2/gesture.png') transparent no-repeat center center;
+    background-size: 150px 150px;
+    height: 150px;
+    width: 150px;
+}
+
+/* -- section 1 */
+#logo-wink      { top: 0em; left: -7em; }
+#wink_desc      { top: 7em; left: 25em; }
+#fun            { top: 20.7em; left: 35em; }
+#open_source    { top: 28em; left: -6em; }
+#df             { top: 42em; left: -16em; }
+
+#logo-wink img  { height: 5.333em; }
+#logo-df        { height: 6.933em; }
+
+
+/* -- section 2 */
+#behind         { top: 5em; left: 8em; }
+#ke20           { top: 13em; left: -18em; }
+#oxxone         { top: 13em; left: 35em; }
+#s_lalande      { top: 25em; left: 22.5em; }
+
+
+/* -- section 3 */
+#website        { top: 8em; left: 14em; }
+#github         { top: 17em; left: -13em; }
+#twitter        { top: 11em; left: 26.5em; }
+#email          { top: 39em; left: 27em; }
+
+#logo-github    { height: 5.333em; margin: 0.5em 0; }
+#logo-twitter   { height: 5.333em; margin: 0.5em 0; }
+#logo-email     { height: 3.333em; margin: 1.5em 0; }
+
+/* -- generics classes */
+div.card {
+    position: absolute;
+    margin: 5px 5px;
+    height: 15.333em;
+    width: 15.333em;
+    z-index: 999;
+}
+
+div.card.middle {
+    display: table;
+}
+
+div.card > div.overlay {
+    position: absolute;
+    height: 100%;
+    min-height: 100%;
+    opacity: 0.7;
+    width: 100%;
+    z-index: -999;
+}
+
+div.card > div.content {
+    position: absolute;
+    width: 90%;
+    height: 90%;
+    min-height: 90%;
+    padding: 5%;
+}
+
+div.card.middle > div.content {
+    position: relative;
+    display: table-cell;
+    vertical-align: middle;
+    width: 100%;
+}
+
+div.card.yellow > div.overlay { background: #e5f27c; }
+div.card.blue   > div.overlay { background: #1b94ff; }
+div.card.green  > div.overlay { background: #00e903; }
+
+h1.lobster {
+    font-family: lobster;
+    font-size: 3.000em;
+    font-weight: normal;
+}
+
+h2.lobster {
+    font-family: lobster;
+    font-size: 2.333em;
+    font-weight: normal;
+}
+
+.center {
+    text-align: center;
+}
+
+div.avatar {
+    margin: 0;
+    height: 90%;
+    min-height: 90%;
+    width: 100%;
+}
+
+div.avatar > img {
+    border: 0.333em solid #fff;
+    height: 70%;
+}
+
+div.pseudo {
+    text-align: right;
+    font-size: 1.667em;
+}
+
+/** set size menu */
+@media screen and (orientation: portrait) {
+    div#top-menu ul li {
+        margin-right: 1.667em;
+        font-size: 1em;
+    }
+
+    div#top-menu ul li > span {
+        display: block;
+        font-size: 50%;
+        padding: 0.633em 0 0 0;
+        margin: -0.733em 0;
+    }
+}

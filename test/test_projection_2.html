@@ -1,0 +1,340 @@
+<!--
+To change this template, choose Tools | Templates
+and open the template in the editor.
+-->
+<!DOCTYPE html>
+<html>
+    <head>
+        <meta http-equiv="content-type" content="text/html; charset=UTF-8">
+        <meta name="apple-mobile-web-app-capable" content="yes">
+        <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no" />
+        
+        <title>Test projection 2</title>
+        
+        <!-- THEME UTILITY -->
+        <link rel="stylesheet" href="../../../_themes/utils/loader.css" type="text/css">
+        <!-- END THEME UTILITY -->
+		
+        <!-- CORE -->
+        <!-- Can be replaced by wink.min.js -->
+        <script type="text/javascript" src="../../../_amd/js/amd.js"></script>
+        <script type="text/javascript" src="../../../_base/_base/js/base.js"></script>
+        <script type="text/javascript" src="../../../_base/error/js/error.js"></script>
+        <script type="text/javascript" src="../../../_base/json/js/json.js"></script>
+        <script type="text/javascript" src="../../../_base/ua/js/ua.js"></script>
+        <script type="text/javascript" src="../../../_base/topics/js/topics.js"></script>
+        <script type="text/javascript" src="../../../_base/_feat/js/feat.js"></script>
+        <script type="text/javascript" src="../../../_base/_feat/js/feat_json.js"></script>
+        <script type="text/javascript" src="../../../_base/_feat/js/feat_css.js"></script>
+        <script type="text/javascript" src="../../../_base/_feat/js/feat_event.js"></script>
+        <script type="text/javascript" src="../../../_base/_feat/js/feat_dom.js"></script>
+        <script type="text/javascript" src="../../../fx/_xy/js/2dfx.js"></script>
+        <script type="text/javascript" src="../../../math/_basics/js/basics.js"></script>
+        <script type="text/javascript" src="../../../net/xhr/js/xhr.js"></script>
+        <script type="text/javascript" src="../../../ui/xy/layer/js/layer.js"></script>
+        <script type="text/javascript" src="../../../ux/event/js/event.js"></script>
+        <script type="text/javascript" src="../../../ux/touch/js/touch.js"></script>
+        <!-- END CORE -->
+        
+        <script type="text/javascript" src="../../../math/_matrix/js/matrix.js"></script>
+        <script type="text/javascript" src="../../../fx/_xyz/js/3dfx.js"></script>
+		<script type="text/javascript" src="../../../ux/gesture/js/gesture.js"></script>
+        <script type="text/javascript" src="../../../plugins/projection/js/projection.js"></script>
+        
+        <!-- STYLES -->
+        <link rel="stylesheet" href="css/test_projection_2.css" type="text/css">
+        <!-- END STYLES -->
+        
+        <!-- FONTS -->
+        <link href='http://fonts.googleapis.com/css?family=Ubuntu|Lobster|Open+Sans:400,600' rel='stylesheet' type='text/css'>
+        <!-- END FONTS -->
+        
+        <script type="text/javascript">
+            
+            window.onresize = function() 
+            {
+                var ref_height = 768,
+                    ref_font = 93.8;
+                
+                var n_size = (window.innerHeight * ref_font) / ref_height;
+                var m_size = (60 * ref_font) / ref_height; // exclude menu height
+                
+                document.body.style.fontSize = n_size-m_size+'%';
+            };
+            
+            var listeners = function(f1, f2) 
+            {
+                this.fx = wink.fx;
+                
+                this.finger_l = f1,
+                this.finger_r = f2;
+                
+                this.displayShadow = function() {
+                    this.fx.apply(this.finger_l, {display: 'block' });
+                    this.fx.apply(this.finger_r, {display: 'block' });
+                };
+                
+                this.hideShadow = function() {
+                    this.fx.apply(this.finger_l, {display: 'none' });
+                    this.fx.apply(this.finger_r, {display: 'none' });
+                };
+                
+                this.locateFingers = function(gestureInfos) 
+                {
+                    this.displayShadow();
+                    this.fx.apply(this.finger_l, {
+                        left:   (gestureInfos.digit1.x - (this.finger_l.offsetWidth  / 2))+'px',
+                        top:    (gestureInfos.digit1.y - (this.finger_l.offsetHeight / 2))+'px'
+                    });
+                    
+                    this.fx.apply(this.finger_r, {
+                        left:   (gestureInfos.digit2.x - (this.finger_r.offsetWidth  / 2))+'px',
+                        top:    (gestureInfos.digit2.y - (this.finger_r.offsetHeight / 2))+'px'
+                    });
+                };
+            };
+            
+            var initEvents = function(projection) 
+            {
+                var list_links = ['introduction', 'behind', 'more'];
+                
+                if(wink.ua.isMobile) 
+                {
+                    var touchZone = wink.byId('touch-zone');
+                    var ctx_listen = new listeners(wink.byId('finger_l'), wink.byId('finger_r'));
+                    
+                    // Add event on the touch zone
+                    wink.ux.gesture.listenTo(touchZone, "instant_rotation", { context: ctx_listen, method: "locateFingers"  }, { preventDefault: true });
+                    wink.ux.gesture.listenTo(touchZone, "gesture_end",      { context: ctx_listen, method: "hideShadow"     }, { preventDefault: true });
+
+                    wink.ux.gesture.listenTo(touchZone, "enlargement",      { context: projection, method: "moveForward"    }, { preventDefault: true });
+                    wink.ux.gesture.listenTo(touchZone, "narrowing",        { context: projection, method: "moveBackward"   }, { preventDefault: true });
+                    
+                    for(var i=0, l=list_links.length; i < l; i++) 
+                    {
+                        var link = wink.byId('link_'+list_links[i]),
+                            section = wink.byId(list_links[i]);
+                        
+                        wink.ux.touch.addListener(link, 'start', function() {}, {preventDefault: true});
+                        wink.ux.touch.addListener(link, 'move',  function() {}, {preventDefault: true});
+                        wink.ux.touch.addListener(link, 'end', (function(projection, section) {
+                            return function() {
+                                projection.moveTo(section);
+                                return false;
+                            };
+                        })(projection, section), {preventDefault: false});
+                    }
+                } 
+                else 
+                {
+                    var func = function(e) {
+                        e.preventDefault();
+
+                        if(e.wheelDeltaY > 0) { this.moveForward(); }
+                        else
+                        if(e.wheelDeltaY < 0) { this.moveBackward(); }
+                    };
+                    
+                    //FF doesn't recognize mousewheel as of FF3.x
+                    var _mousewheelevt=(/Firefox/i.test(navigator.userAgent))? 
+                        "DOMMouseScroll" : "mousewheel";
+                    document.addEventListener(_mousewheelevt, wink.bind(func, projection), false);
+                    
+                    for(var i=0, l=list_links.length; i < l; i++) 
+                    {
+                        var link = wink.byId('link_'+list_links[i]),
+                            section = wink.byId(list_links[i]);
+                            
+                        link.addEventListener('click', (function(projection, section) {
+                            return function() {
+                                projection.moveTo(section);
+                                return false;
+                            };
+                        })(projection, section), false);
+                    }
+                }
+            };
+            
+            var init = function() 
+            {
+                // Create a projection object
+                var projection = new wink.plugins.Projection({
+                    target: 'projection-zone',
+                    speed: 5,
+                    callbacks: {
+                        onEndSliding: function(data) {
+                            var elem_id = projection.getElemFromPanelKey(data.panel.current).id;
+                            var old = wink.query('a.selected', wink.byId('top-menu'))[0];
+                            wink.fx.removeClass(old, 'selected');
+                            wink.fx.addClass(wink.query('a#link_'+elem_id)[0], 'selected');
+                        }
+                    }
+                });
+                
+                projection.setPerspective(80);
+                projection.setPerspectiveOrigin('50%', '65%');
+                
+                initEvents(projection);
+            };
+            
+        </script>
+    </head>
+    <body onload="window.onresize(); init();">
+        <div id="header" class="w_box w_header w_bg_dark">
+            <span id="title">Projection</span>
+            <input type="button" value="home" class="w_button w_radius w_bg_light w_right" onclick="window.location='../../../../index.html?theme='+theme"/>
+        </div>
+        
+        <div id="container">
+            <div id="main-content">
+                <div id="top-menu">
+                    <ul>
+                        <li>
+                            <a href="#" id="link_introduction" class="selected">introduction</a>
+                            <span>|</span>
+                        </li>
+                        <li>
+                            <a href="#" id="link_behind">behind the scenes</a>
+                            <span>|</span>
+                        </li>
+                        <li>
+                            <a href="#" id="link_more">more info</a>
+                            <span>|</span>
+                        </li>
+                    </ul>
+                </div>
+                <div id="right-border"></div>
+                <div id="projection-zone">
+                    <section id="introduction" data-depth="100">
+                        <div id="logo-wink" class="card blue middle" data-depth="180">
+                            <div class="overlay"></div>
+                            <div class="content center">
+                                <img src="img/test2/logos/logo-wink.png" alt="winktoolkit" />
+                            </div>
+                        </div>
+                        <div id="wink_desc" class="card blue" data-depth="100">
+                            <div class="overlay"></div>
+                            <div class="content">
+                                <h1 class="lobster"><a href="http://www.winktoolkit.org/">Wink</a></h1>
+                                <p>
+                                    a mobile JS Framework to build great 
+                                    mobile web apps
+                                </p>
+                            </div>
+                        </div>
+                        <div id="fun" class="card blue middle" data-depth="120">
+                            <div class="overlay"></div>
+                            <div class="content center">
+                                <h1 class="lobster">It is fun...</h1>
+                            </div>
+                        </div>
+                        <div id="open_source" class="card blue middle" data-depth="140">
+                            <div class="overlay"></div>
+                            <div class="content center">
+                                <h2 class="lobster">... it is</h2>
+                                <h2 class="lobster">Open Source</h2>
+                            </div>
+                        </div>
+                        <div id="df" class="card blue middle" data-depth="250">
+                            <div class="overlay"></div>
+                            <div class="content center">
+                                <a href="http://dojofoundation.org/">
+                                    <img id="logo-df" src="img/test2/logos/logo-dojo.png" alt="dojo" />
+                                </a>
+                            </div>
+                        </div>
+                    </section>
+                    <section id="behind" data-depth="500">
+                        <div id="behind" class="card green" data-depth="500">
+                            <div class="overlay"></div>
+                            <div class="content">
+                                <h1 class="lobster">Behind the scenes</h1>
+                            </div>
+                        </div>
+                        <div id="ke20" class="card green" data-depth="560">
+                            <div class="overlay"></div>
+                            <div class="content">
+                                <div class="avatar">
+                                    <img src="img/test2/avatars/ke20.jpeg" alt="ke20" />
+                                </div>
+                                <div class="pseudo">
+                                    <a href="http://twitter.com/AuvinetKe20">@AuvinetKe20</a>
+                                </div>
+                            </div>
+                        </div>
+                        <div id="oxxone" class="card green" data-depth="540">
+                            <div class="overlay"></div>
+                            <div class="content">
+                                <div class="avatar">
+                                    <img src="img/test2/avatars/oxxone.jpg" alt="oxxone" />
+                                </div>
+                                <div class="pseudo">
+                                    <a href="http://twitter.com/oxxone">@Oxxone</a>
+                                </div>
+                            </div>
+                        </div>
+                        <div id="s_lalande" class="card green" data-depth="560">
+                            <div class="overlay"></div>
+                            <div class="content">
+                                <div class="avatar">
+                                    <img src="img/test2/avatars/s_lalande.jpg" alt="s_lalande" />
+                                </div>
+                                <div class="pseudo">
+                                    <a href="http://twitter.com/s_lalande">@s_lalande</a>
+                                </div>
+                            </div>
+                        </div>
+                    </section>
+                    <section id="more" data-depth="900">
+                        <div id="github" class="card yellow middle" data-depth="950">
+                            <div class="overlay"></div>
+                            <div class="content center">
+                                <h1 class="lobster">source code</h1>
+                                <img id="logo-github" src="img/test2/logos/github.png" alt="github" />
+                                <h1 class="lobster">on <a href="https://github.com/winktoolkit/wink">Github</a></h1>
+                            </div>
+                        </div>
+                        <div id="website" class="card yellow" data-depth="920">
+                            <div class="overlay"></div>
+                            <div class="content center">
+                                <h1 class="lobster">Our website</h1>
+                                <h1>winktoolkit.org</h1>
+                            </div>
+                        </div>
+                        <div id="twitter" class="card yellow middle" data-depth="950">
+                            <div class="overlay"></div>
+                            <div class="content center">
+                                <h1 class="lobster">On twitter</h1>
+                                <img id="logo-twitter" src="img/test2/logos/twitter.png" alt="twitter" />
+                                <p>
+                                    <a href="https://twitter.com/winktoolkit">@winktoolkit</a>
+                                </p>
+                            </div>
+                        </div>
+                        <div id="email" class="card yellow" data-depth="1050">
+                            <div class="overlay"></div>
+                            <div class="content center">
+                                <h1 class="lobster">email</h1>
+                                <a href="mailto:winktoolkit@gmail.com">
+                                    <img id="logo-email" src="img/test2/logos/email.png" alt="email" />
+                                </a>
+                            </div>
+                        </div>
+                    </section>
+                </div>
+            </div>
+            <div id="touch-zone">
+                <div id="touch-infos">
+                    <p>
+                        <img src="img/test2/enlarge.png" alt="enlarge" /><br />
+                        <img src="img/test2/narrow.png" alt="narrow" />
+                    </p>
+                    <p>pinch / zoom</p>
+                </div>
+            </div>
+        </div>
+        
+        <div id="finger_l" class="fingerShadow"></div>
+        <div id="finger_r" class="fingerShadow"></div>
+    </body>
+</html>

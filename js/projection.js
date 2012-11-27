@@ -141,7 +141,7 @@ define(['../../../_amd/core', '../../../fx/_xyz/js/3dfx.js'], function(wink)
                 return;
             
             this._startPos = this.layers[this._used].depth;
-            var next = this.getNextPannel();
+            var next = this.getNextPanel();
             this._endPos = this.layers[next].depth;
             
             if(wink.isCallback(this._callbacks.startSliding)) {
@@ -239,7 +239,7 @@ define(['../../../_amd/core', '../../../fx/_xyz/js/3dfx.js'], function(wink)
          * 
          * @return {integer}
          */
-        getNextPannel: function() {
+        getNextPanel: function() {
             var next = this._used + 1,
                 max  = this.layers.length - 1;
             return next >  max ? max : next;
@@ -254,6 +254,15 @@ define(['../../../_amd/core', '../../../fx/_xyz/js/3dfx.js'], function(wink)
         getPreviousPanel: function() {
             var prev = this._used - 1;
             return prev < 0 ? 0 : prev;
+        },
+        
+        /**
+         * Returns the associated element for a panel key
+         * 
+         * @return {HTMLElement}
+         */
+        getElemFromPanelKey: function(key) {
+            return this.layers[key].element;
         },
         
         /**
@@ -283,7 +292,7 @@ define(['../../../_amd/core', '../../../fx/_xyz/js/3dfx.js'], function(wink)
         _getArgs: function() {
             return {
                 'panel': {
-                    'next': this.getNextPannel(),
+                    'next': this.getNextPanel(),
                     'current': this.getCurrentPanel(),
                     'prev': this.getPreviousPanel()
                 },
@@ -493,7 +502,7 @@ define(['../../../_amd/core', '../../../fx/_xyz/js/3dfx.js'], function(wink)
          * @return {object}
          */
         _getNextLayer: function() {
-            var next = this.getNextPannel();
+            var next = this.getNextPanel();
             return this.layers[next];
         },
         
