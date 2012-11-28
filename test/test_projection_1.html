@@ -9,6 +9,8 @@ and open the template in the editor.
         <meta name="apple-mobile-web-app-capable" content="yes">
         <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no" />
         
+        <title>Test projection 1</title>
+        
         <!-- THEME UTILITY -->
         <link rel="stylesheet" href="../../../_themes/utils/loader.css" type="text/css">
         <!-- END THEME UTILITY -->
@@ -88,7 +90,7 @@ and open the template in the editor.
                 });
                 
 //                projection.setPerspective(75);
-//                projection.setPerspectiveOrigin('20%', '75%');
+                projection.setPerspectiveOrigin('50%', '75%');
                 
                 // Navigation by scrolling or enlargement for mobiles and tablets
                 if(wink.ua.isMobile) {
@@ -133,10 +135,6 @@ and open the template in the editor.
         </script>
     </head>
     <body onload="init();">
-        <div id="header" class="w_box w_header w_bg_dark">
-            <span id="title">Projection</span>
-            <input type="button" value="home" class="w_button w_radius w_bg_light w_right" onclick="window.location='../../../../index.html?theme='+theme"/>
-        </div>
         
         <div id="container">
             <div id="wrapper">

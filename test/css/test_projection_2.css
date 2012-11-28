@@ -104,8 +104,8 @@ div#projection-zone > section {
 div#touch-zone {
     background: url('../img/test2/bg_ios.jpg') #6d7b7e repeat top left;
     border-top: 1px solid #ff5500;
-    height: 6.300em; 
-    min-height: 6.300em;
+    height: 6.500em; 
+    min-height: 6.500em;
     position: relative;
 }
 
@@ -246,13 +246,13 @@ div.pseudo {
 /** set size menu */
 @media screen and (orientation: portrait) {
     div#top-menu ul li {
-        margin-right: 1.667em;
-        font-size: 1em;
+        margin-right: 1.333em;
+        font-size: 0.866em;
     }
 
     div#top-menu ul li > span {
         display: block;
-        font-size: 50%;
+        font-size: 80%;
         padding: 0.633em 0 0 0;
         margin: -0.733em 0;
     }

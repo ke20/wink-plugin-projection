@@ -10,11 +10,11 @@ and open the template in the editor.
         <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no" />
         
         <title>Test projection 2</title>
-        
+		
         <!-- THEME UTILITY -->
         <link rel="stylesheet" href="../../../_themes/utils/loader.css" type="text/css">
         <!-- END THEME UTILITY -->
-		
+        
         <!-- CORE -->
         <!-- Can be replaced by wink.min.js -->
         <script type="text/javascript" src="../../../_amd/js/amd.js"></script>
@@ -57,9 +57,7 @@ and open the template in the editor.
                     ref_font = 93.8;
                 
                 var n_size = (window.innerHeight * ref_font) / ref_height;
-                var m_size = (60 * ref_font) / ref_height; // exclude menu height
-                
-                document.body.style.fontSize = n_size-m_size+'%';
+                document.body.style.fontSize = n_size+'%';
             };
             
             var listeners = function(f1, f2) 
@@ -180,11 +178,6 @@ and open the template in the editor.
         </script>
     </head>
     <body onload="window.onresize(); init();">
-        <div id="header" class="w_box w_header w_bg_dark">
-            <span id="title">Projection</span>
-            <input type="button" value="home" class="w_button w_radius w_bg_light w_right" onclick="window.location='../../../../index.html?theme='+theme"/>
-        </div>
-        
         <div id="container">
             <div id="main-content">
                 <div id="top-menu">
