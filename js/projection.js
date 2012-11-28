@@ -555,7 +555,7 @@ define(['../../../_amd/core', '../../../fx/_xyz/js/3dfx.js'], function(wink)
                     wink.call(this._callbacks.sliding, this._getArgs());
                 }
                 
-                this._timeout = setTimeout(wink.bind(this._moveTo, this), this._fps, depth);
+                this._timeout = wink.setTimeout(this, '_moveTo', this._fps, depth);
             }
         }
     };
