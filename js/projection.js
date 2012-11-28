@@ -280,6 +280,12 @@ define(['../../../_amd/core', '../../../fx/_xyz/js/3dfx.js'], function(wink)
                 return;
             }
             
+            this._startPos = this.layers[this._used].depth;
+            var target = layer_key < this._used ? 
+                this.getPreviousPanel() : 
+                this.getNextPanel();
+            this._endPos = this.layers[target].depth;
+            
             this._used = layer_key;
             this._moveTo(this.layers[layer_key].depth);
         },
