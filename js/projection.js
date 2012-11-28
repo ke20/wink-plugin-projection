@@ -140,16 +140,7 @@ define(['../../../_amd/core', '../../../fx/_xyz/js/3dfx.js'], function(wink)
             if(!wink.isNull(this._timeout))
                 return;
             
-            this._startPos = this.layers[this._used].depth;
-            var next = this.getNextPanel();
-            this._endPos = this.layers[next].depth;
-            
-            if(wink.isCallback(this._callbacks.startSliding)) {
-                wink.call(this._callbacks.startSliding, this._getArgs());
-            }
-            
-            this._used = next;
-            this._moveTo(this.layers[this._used].depth);
+            this._startMove(this.getNextPanel());
         },
         
         /**
@@ -159,16 +150,25 @@ define(['../../../_amd/core', '../../../fx/_xyz/js/3dfx.js'], function(wink)
             if(!wink.isNull(this._timeout))
                 return;
             
-            this._startPos = this.layers[this._used].depth;
-            var prev = this.getPreviousPanel();
-            this._endPos = this.layers[prev].depth;
-            
-            if(wink.isCallback(this._callbacks.endSliding)) {
-                wink.call(this._callbacks.endSliding, this._getArgs());
+            this._startMove(this.getPreviousPanel());
+        },
+        
+        /**
+         * Moves in translation to the target section
+         * 
+         * @param {HTMLElement} section
+         */
+        moveTo: function(section) {
+            if(this._timeout != null)
+                this._stopMove();
+                
+            var layer_key = this._map[section.id];
+            if(wink.isNull(layer_key)) {
+                wink.log('[Error] - projection - moveTo: The section is not correct');
+                return;
             }
             
-            this._used = prev;
-            this._moveTo(this.layers[this._used].depth);
+            this._startMove(layer_key);
         },
         
         /**
@@ -263,31 +263,6 @@ define(['../../../_amd/core', '../../../fx/_xyz/js/3dfx.js'], function(wink)
          */
         getElemFromPanelKey: function(key) {
             return this.layers[key].element;
-        },
-        
-        /**
-         * Moves in translation to the target section
-         * 
-         * @param {HTMLElement} section
-         */
-        moveTo: function(section) {
-            if(this._timeout != null)
-                this._stopMove();
-                
-            var layer_key = this._map[section.id];
-            if(wink.isNull(layer_key)) {
-                wink.log('[Error] - projection - moveTo: The section is not correct');
-                return;
-            }
-            
-            this._startPos = this.layers[this._used].depth;
-            var target = layer_key < this._used ? 
-                this.getPreviousPanel() : 
-                this.getNextPanel();
-            this._endPos = this.layers[target].depth;
-            
-            this._used = layer_key;
-            this._moveTo(this.layers[layer_key].depth);
         },
         
         /**
@@ -523,9 +498,35 @@ define(['../../../_amd/core', '../../../fx/_xyz/js/3dfx.js'], function(wink)
         },
         
         /**
+         * Start the sliding event
+         * 
+         * @param {integer} panelIndex index of the panel to move
+         */
+        _startMove: function(panelIndex) {
+            // Do nothing if go to the actual panel
+            if(panelIndex == this._used) { 
+                return; 
+            }
+            
+            this._startPos = this.layers[this._used].depth;
+            this._endPos = this.layers[panelIndex].depth;
+            
+            if(wink.isCallback(this._callbacks.startSliding)) {
+                wink.call(this._callbacks.startSliding, this._getArgs());
+            }
+            
+            this._used = panelIndex;
+            this._moveTo(this.layers[this._used].depth);
+        },
+        
+        /**
          * Stops the sliding event
          */
         _stopMove: function() {
+            if(wink.isCallback(this._callbacks.endSliding)) {
+                wink.call(this._callbacks.endSliding, this._getArgs());
+            }
+            
             clearTimeout(this._timeout);
             this._timeout = null;
         },
@@ -542,10 +543,6 @@ define(['../../../_amd/core', '../../../fx/_xyz/js/3dfx.js'], function(wink)
             {
                 this._translateElements(depth);
                 this._stopMove();
-                
-                if(wink.isCallback(this._callbacks.endSliding)) {
-                    wink.call(this._callbacks.endSliding, this._getArgs());
-                }
             } 
             else 
             {
